@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Какой сценарий вами управляет?</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#150f28;
+    --panel:#1d1638;
+    --panel-soft:#221b40;
+    --gold:#c9a24a;
+    --gold-soft:#e8c874;
+    --text:#f1ecfb;
+    --text-dim:#9c8dc7;
+    --border:rgba(201,162,74,.35);
+    --radius:18px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 600px 400px at 15% -5%, rgba(120,90,190,.28), transparent 60%),
+      radial-gradient(ellipse 500px 500px at 100% 20%, rgba(180,140,60,.12), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+  }
+  .stars{
+    position:absolute;top:0;left:0;right:0;height:100%;min-height:100vh;
+    pointer-events:none;z-index:0;
+    background-image:
+      radial-gradient(2px 2px at 12% 8%, rgba(255,255,255,.9), transparent),
+      radial-gradient(1.5px 1.5px at 28% 22%, rgba(255,255,255,.7), transparent),
+      radial-gradient(2px 2px at 75% 6%, rgba(255,255,255,.8), transparent),
+      radial-gradient(1.5px 1.5px at 92% 18%, rgba(255,255,255,.6), transparent),
+      radial-gradient(1.5px 1.5px at 8% 40%, rgba(255,255,255,.55), transparent),
+      radial-gradient(2px 2px at 60% 35%, rgba(255,255,255,.7), transparent),
+      radial-gradient(1.5px 1.5px at 40% 55%, rgba(255,255,255,.5), transparent),
+      radial-gradient(1.5px 1.5px at 85% 50%, rgba(255,255,255,.6), transparent),
+      radial-gradient(2px 2px at 20% 68%, rgba(255,255,255,.7), transparent),
+      radial-gradient(1.5px 1.5px at 65% 75%, rgba(255,255,255,.5), transparent),
+      radial-gradient(1.5px 1.5px at 92% 82%, rgba(255,255,255,.6), transparent),
+      radial-gradient(2px 2px at 35% 90%, rgba(255,255,255,.6), transparent);
+    background-repeat:repeat-y;
+    background-size:100% 900px;
+  }
+  .app{
+    position:relative;z-index:1;
+    width:100%;max-width:480px;
+    padding:28px 22px 40px;
+    display:flex;flex-direction:column;
+  }
+  .progress{
+    display:flex;gap:5px;margin-bottom:28px;
+  }
+  .progress i{
+    flex:1;height:3px;border-radius:2px;
+    background:rgba(255,255,255,.12);
+    overflow:hidden;
+  }
+  .progress i.done{background:var(--gold);}
+  .progress i.current{background:rgba(201,162,74,.5);}
+
+  .screen{display:none;flex-direction:column;flex:1;animation:fade .35s ease;}
+  .screen.active{display:flex;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:translateY(0);}}
+
+  h1{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:600;
+    font-size:30px;
+    line-height:1.25;
+    margin:0 0 16px;
+    color:var(--text);
+  }
+  h1 em{
+    font-style:italic;
+    color:var(--gold-soft);
+    font-weight:600;
+  }
+  h2{
+    font-family:'Cormorant Garamond',serif;
+    font-weight:600;
+    font-size:26px;
+    line-height:1.3;
+    margin:0 0 14px;
+  }
+  p{
+    font-size:15.5px;
+    line-height:1.62;
+    color:var(--text);
+    margin:0 0 14px;
+  }
+  p.dim{color:var(--text-dim);}
+
+  .badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:6px 14px;
+    border:1px solid var(--border);
+    border-radius:999px;
+    font-size:12px;
+    letter-spacing:.06em;
+    color:var(--gold-soft);
+    margin-bottom:16px;
+    width:fit-content;
+    background:rgba(201,162,74,.06);
+  }
+  .badge span.dot{width:4px;height:4px;border-radius:50%;background:var(--gold);display:inline-block;}
+
+  .btn{
+    display:block;width:100%;
+    text-align:center;
+    padding:16px 18px;
+    border-radius:14px;
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    font-weight:500;
+    cursor:pointer;
+    border:1px solid var(--border);
+    background:transparent;
+    color:var(--text);
+    margin-bottom:12px;
+    transition:background .2s ease, transform .1s ease;
+    text-decoration:none;
+  }
+  .btn:active{transform:scale(.985);}
+  .btn:hover{background:rgba(255,255,255,.04);}
+  .btn-option{text-align:left;}
+  .btn-primary{
+    background:linear-gradient(135deg, var(--gold), #a8823a);
+    border:none;
+    color:#1a1330;
+    font-weight:600;
+  }
+  .btn-primary:hover{filter:brightness(1.05);}
+  .btn-ghost{
+    border:1px solid var(--border);
+    color:var(--gold-soft);
+  }
+
+  .spacer{flex:1;}
+
+  .card{
+    background:var(--panel);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:var(--radius);
+    padding:22px 20px;
+    margin-bottom:18px;
+  }
+  .card-soft{
+    background:var(--panel-soft);
+  }
+  .eyebrow{
+    font-size:11px;
+    letter-spacing:.08em;
+    color:var(--text-dim);
+    margin-bottom:8px;
+    text-transform:uppercase;
+  }
+  .divider{
+    height:1px;
+    background:linear-gradient(90deg, transparent, rgba(201,162,74,.35), transparent);
+    margin:26px 0;
+  }
+  .intro-scroll{max-height:none;}
+  .welcome-name{color:var(--gold-soft);font-weight:600;}
+  .q-num{font-size:12px;color:var(--text-dim);margin-bottom:10px;letter-spacing:.04em;}
+</style>
+</head>
+<body>
+<div class="stars"></div>
+<div class="app" id="app">
+
+  <!-- ЭКРАН 0: ПРИВЕТСТВИЕ -->
+  <div class="screen active" data-screen="welcome">
+    <div class="badge"><span class="dot"></span><span>тест · 12 вопросов</span></div>
+    <h1>Какой сценарий <em>вами управляет?</em></h1>
+    <p>«Если вы не пропишете свой сценарий жизни, его пропишет кто-то другой за вас: другие люди, чужие установки, старый страх, что не получится, усталость, тревога или чужое мнение».</p>
+    <p>Знаете, как это выглядит на практике? Почти всегда одинаково: люди и обстоятельства вокруг меняются, а история внутри остаётся той же.</p>
+    <p>Я сама когда-то поймала себя на этой мысли: хожу по кругу и вроде бы «лица меняются», но результат один и тот же — я в тупике. И именно это осознание дало мне толчок — нужно что-то менять.</p>
+    <p>Меня зовут <span class="welcome-name">Ирина</span>, и семь лет я веду людей в их подсознание и вижу одну и ту же картину: вы умные, сильные, с мозгами всё в порядке, а внутри будто застряли в одном сценарии.</p>
+    <p>Здесь двенадцать вопросов. Много не думайте, отвечайте то, что идёт изнутри — тогда ответ будет самым честным и точным.</p>
+    <p class="dim">Знайте, что вы отвечаете не для меня, а для себя, поэтому будьте в первую очередь честны перед собой.</p>
+    <div class="spacer"></div>
+    <button class="btn btn-primary" onclick="startQuiz()">поехали</button>
+  </div>
+
+  <!-- ЭКРАН ВОПРОСОВ (шаблон, наполняется скриптом) -->
+  <div class="screen" data-screen="question">
+    <div class="progress" id="progress"></div>
+    <div class="q-num" id="qNum"></div>
+    <h2 id="qText"></h2>
+    <div id="qOptions"></div>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- ЭКРАН РЕЗУЛЬТАТА -->
+  <div class="screen" data-screen="result">
+    <div class="badge"><span class="dot"></span><span id="resultStep"></span></div>
+    <h1 id="resultTitle"></h1>
+    <p id="resultIntro" class="dim"></p>
+    <div id="resultBody"></div>
+
+    <div class="divider"></div>
+
+    <div class="card card-soft">
+      <div class="eyebrow">рядом звучит ещё одна тема</div>
+      <h2 id="secondaryTitle" style="font-size:19px;margin-bottom:8px;"></h2>
+      <p id="secondaryBody" style="margin:0;"></p>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="card">
+      <p id="ctaText"></p>
+      <a class="btn btn-primary" id="channelBtn" href="#" target="_blank">канал ирины</a>
+      <button class="btn btn-ghost" onclick="restartQuiz()">пройти заново</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const tg = window.Telegram ? window.Telegram.WebApp : null;
+if(tg){ tg.ready(); tg.expand(); }
+
+const CHANNEL_LINK = "https://t.me/+fT98wPalgzI1MzYy";
+
+// ---------- ДАННЫЕ НАПРАВЛЕНИЙ ----------
+const DIRECTIONS = {
+  A: {
+    step: "1 ступень · стресс, страх, контроль",
+    title: "Внутри постоянная «мясорубка» из беспокойных мыслей",
+    body: [
+      "Внутри вас будто сигнализация, которая не выключается. Даже когда снаружи всё спокойно, внутри крутится вечное «а вдруг». Кажется, стоит на секунду выдохнуть — и всё, что вы держите, посыплется.",
+      "Скорее всего, где-то глубоко живёт установка: если я перестану контролировать, случится что-то непоправимое. Поэтому вы рассчитываете наперёд, держите в голове все варианты развития событий, готовитесь к худшему заранее — просто чтобы не быть застигнутой врасплох.",
+      "Это не слабость. Вы слишком долго были единственной опорой — и для себя, и для всех вокруг, и разучились доверять, что мир не рухнет, если хоть немного отпустить вожжи. Пора разрешить себе выдохнуть по-настоящему, а не урывками между делами."
+    ],
+    secondary: "рядом с этим обычно живёт постоянное напряжение, которое не отпускает даже в покое."
+  },
+  B: {
+    step: "2 ступень · самоценность, границы",
+    title: "Любовь к себе",
+    body: [
+      "Вы говорите «да» быстрее, чем успеваете услышать своё «нет». Быть удобной стало настолько привычным, что момент, когда вы снова выбираете чужое спокойствие вместо своего, просто сливается с обычным днём.",
+      "Внутри у вас, скорее всего, живёт установка: если я буду настоящей, меня разлюбят. И вы раз за разом выбираете безопасность отношений вместо честности с собой, потому что где-то глубоко кажется — вас будут любить только удобную.",
+      "Но любовь, которая держится только на вашей удобности, — это не любовь, это сделка. И вы имеете полное право её пересмотреть. Пора возвращать себя, не после того, как все останутся довольны, а прямо сейчас."
+    ],
+    secondary: "рядом с этим обычно живёт привычка выбирать чужое спокойствие вместо своего."
+  },
+  C: {
+    step: "3 ступень · тело как ресурс",
+    title: "Тело и энергия",
+    body: [
+      "Ваше тело давно стало механизмом. Оно должно тянуть, справляться, работать, выдерживать — и вы настолько привыкли требовать от него функциональности, что перестали спрашивать, как оно вообще себя чувствует.",
+      "Честно вспомнить, когда вы в последний раз просто кайфовали от того, что вы живая, а не от результата или галочки в списке дел, — это уже задача, требующая настоящей смелости.",
+      "Тело первым подаёт сигнал, что пора остановиться — через усталость, которая не проходит, через хроническое «потом отдохну». Вопрос только в том, готовы ли вы наконец его услышать, а не снова заглушить делами."
+    ],
+    secondary: "рядом с этим обычно живёт ощущение, что тело существует где-то отдельно от вас."
+  },
+  D: {
+    step: "6 ступень · деньги как внутренний суд",
+    title: "Денежная энергия",
+    body: [
+      "Деньги стали внутренним судьёй, который управляет вашим настроением, состоянием и здоровьем. Вы боитесь не того, что денег нет или не хватит, а глубина этого страха в другом: ваша психика будто не выдержит больших сумм.",
+      "Важно убрать эти негативные сценарии и разрешить себе большие суммы, чтобы жить счастливой и качественной жизнью."
+    ],
+    secondary: "рядом с этим обычно живут деньги, которые давно стали вопросом внутреннего суда."
+  },
+  E: {
+    step: "4, 5, 7 ступени · чужой сценарий",
+    title: "Направление и реализация",
+    body: [
+      "Мысль, что пройдёт ещё пять лет, а вы останетесь там же, пугает сильнее самих перемен. Голова давно всё понимает. А действия всё откладываются. Главная причина — страх проявления: «а вдруг осудят, а вдруг я сделаю не так».",
+      "Сценарий, оставленный без вашего авторства, охотно допишет кто-то другой. И вы будете жить по указке чужих людей, сценариев и убеждений.",
+      "Какую реальность вам проживать — выбираете только вы."
+    ],
+    secondary: "рядом с этим обычно живёт чувство, что сценарий вашей жизни пишет кто-то другой."
+  }
+};
+
+// ---------- ВОПРОСЫ ----------
+// type "stage": определяет вариант вступления к результату (индекс < 2 => "12", иначе "34")
+// type "score": варианты содержат direction A-E
+// type "ready": определяет вариант финального CTA (индекс < 2 => "12", иначе "34")
+const QUESTIONS = [
+  { type:"stage", text:"Где вы сейчас в этой истории с собой?", options:[
+    "Только начинаю замечать, что что-то не так",
+    "Пробую разбираться, но энергии хватает урывками",
+    "Ищу решение давно, присматриваюсь, что подойдёт",
+    "Уже в процессе перемен, хочу двигаться быстрее"
+  ]},
+  { type:"score", text:"Какая из этих мыслей была у вас на этой неделе?", options:[
+    {d:"A", t:"«Если расслаблюсь хоть немного — всё развалится»"},
+    {d:"B", t:"«Опять сказала «да», хотя внутри зрело «нет»"},
+    {d:"C", t:"«Моё тело работает на дела, а я его почти не чувствую»"},
+    {d:"D", t:"«Хочу, а деньги каждый раз останавливают»"},
+    {d:"E", t:"«Головой всё понимаю, а жизнь топчется на месте»"}
+  ]},
+  { type:"score", text:"В какой мысли вам сложнее всего признаться даже себе?", options:[
+    {d:"A", t:"«Держать всё под контролем — моя вечная работа, и я устала быть единственной, кто её тянет»"},
+    {d:"B", t:"«Я устала быть удобной для всех, кроме себя»"},
+    {d:"C", t:"«Я разучилась получать удовольствие от простых вещей»"},
+    {d:"D", t:"«Деньги управляют моими решениями, а не я — ими»"},
+    {d:"E", t:"«Я живу жизнь, которую от меня ждут, а свою давно отложила»"}
+  ]},
+  { type:"score", text:"Какую фразу о себе вы боитесь услышать больше всего?", options:[
+    {d:"A", t:"«Ты слишком тревожная, успокойся уже»"},
+    {d:"B", t:"«Тобой пользуются, ты слишком мягкая»"},
+    {d:"C", t:"«Ты совсем себя запустила»"},
+    {d:"D", t:"«Деньги у тебя всегда будут утекать сквозь пальцы»"},
+    {d:"E", t:"«Ты снова там же, где начинала»"}
+  ]},
+  { type:"score", text:"Как вы ведёте себя, когда становится тяжело?", options:[
+    {d:"A", t:"Беру всё под ещё больший контроль: планирую, проверяю, перепроверяю"},
+    {d:"B", t:"Молчу и терплю, лишь бы сохранить мир вокруг"},
+    {d:"C", t:"Отключаюсь от тела и работаю на автомате"},
+    {d:"D", t:"Начинаю считать деньги и тревожиться о будущем ещё сильнее"},
+    {d:"E", t:"Откладываю решение, жду, что станет понятнее само"}
+  ]},
+  { type:"score", text:"Что происходит, когда у вас появляется свободное время?", options:[
+    {d:"A", t:"Голова продолжает крутить список дел даже в тишине"},
+    {d:"B", t:"Трачу его на других — так привычнее и спокойнее"},
+    {d:"C", t:"Просто сплю или залипаю в телефон, сил хватает только на это"},
+    {d:"D", t:"Чувствую вину за каждый потраченный на себя рубль и час"},
+    {d:"E", t:"Заполняю время теми же привычными делами"}
+  ]},
+  { type:"score", text:"Как вы реагируете на комплимент?", options:[
+    {d:"A", t:"Внутренне ищу подвох"},
+    {d:"B", t:"Смущаюсь и сразу перевожу тему на другого"},
+    {d:"C", t:"Комплимент проходит мимо, будто не про меня"},
+    {d:"D", t:"Думаю: «если бы денег было больше — легче бы поверила»"},
+    {d:"E", t:"На словах соглашаюсь, а внутри сомнение живёт своей жизнью"}
+  ]},
+  { type:"score", text:"Как вы принимаете решения, которые касаются только вас?", options:[
+    {d:"A", t:"Долго анализирую все риски, прежде чем решиться"},
+    {d:"B", t:"Сначала спрашиваю мнение других, потом уже своё"},
+    {d:"C", t:"Откладываю, если это требует времени на себя или тело"},
+    {d:"D", t:"В первую очередь смотрю, сколько это будет стоить"},
+    {d:"E", t:"Откладываю на потом, жду «подходящего момента»"}
+  ]},
+  { type:"score", text:"Как начинается ваше утро?", options:[
+    {d:"A", t:"С мысли, что нужно успеть всё и сразу"},
+    {d:"B", t:"С мысли, как удержать всех вокруг довольными"},
+    {d:"C", t:"С усталости, которая не проходит даже после сна"},
+    {d:"D", t:"С мыслей о деньгах: что оплатить, сколько осталось"},
+    {d:"E", t:"С ощущения, что снова день на автомате"}
+  ]},
+  { type:"score", text:"Чего вы боитесь больше всего, если ответить честно?", options:[
+    {d:"A", t:"Что тревога останется с вами на всю жизнь"},
+    {d:"B", t:"Что, начав выбирать себя, потеряете чьё-то одобрение"},
+    {d:"C", t:"Что тело так и останется чужим, уставшим и глухим"},
+    {d:"D", t:"Что денег хронически будет мало при любых стараниях"},
+    {d:"E", t:"Что пройдёт ещё пять лет, а вы окажетесь ровно там же"}
+  ]},
+  { type:"score", text:"Какую фразу вы хотели бы сказать себе прямо сейчас?", options:[
+    {d:"A", t:"«Я разрешаю себе отпустить контроль»"},
+    {d:"B", t:"«Я выбираю себя, и это моё законное право»"},
+    {d:"C", t:"«Моё тело — часть моей жизни, а не расходник»"},
+    {d:"D", t:"«Деньги — это энергия, которая течёт ко мне»"},
+    {d:"E", t:"«Я пишу свой сценарий сама и делаю это уже сейчас»"}
+  ]},
+  { type:"ready", text:"Насколько вы готовы что-то менять?", options:[
+    "Пока присматриваюсь, время терпит",
+    "Готова, ищу, с чего начать",
+    "Готова, нужна поддержка и понятные шаги",
+    "Уже в процессе, хочу быстрее"
+  ]}
+];
+
+const RESULT_INTRO = {
+  "12": "Похоже, вы только начинаете признаваться себе в этом, и это уже большой шаг. Вот что показал тест.",
+  "34": "Вы давно в этой теме, и кое-что из этого вы уже подозревали о себе. Иногда полезно увидеть это чёрным по белому."
+};
+
+const FINAL_CTA = {
+  "12": "Пока вы читали это, наверняка на паре фраз задержались чуть дольше, чем на остальных, и я всегда вижу, где именно люди застревают, это не совпадение и не случайная формулировка теста. В канале я как раз рассказываю, что происходит дальше с теми фразами, на которых вы только что зависли: куда они ведут, если с ними ничего не делать, и что меняется, если начать.",
+  "34": "Есть одна вещь, про которую я специально не написала в этом результате: что именно происходит с человеком через три месяца после того, как он видит себя вот так же честно, как вы сейчас, и решает не закрывать это, а пойти дальше. Я показываю это в канале на реальных примерах."
+};
+
+// ---------- СОСТОЯНИЕ ----------
+let current = -1; // -1 = welcome
+let answers = [];
+let scores = {A:0,B:0,C:0,D:0,E:0};
+let lastSeen = {A:-1,B:-1,C:-1,D:-1,E:-1};
+let stageBranch = "12";
+let readyBranch = "12";
+
+function showScreen(name){
+  document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+  document.querySelector('[data-screen="'+name+'"]').classList.add("active");
+}
+
+function startQuiz(){
+  current = 0;
+  answers = [];
+  scores = {A:0,B:0,C:0,D:0,E:0};
+  lastSeen = {A:-1,B:-1,C:-1,D:-1,E:-1};
+  renderQuestion();
+}
+
+function renderQuestion(){
+  showScreen("question");
+  const q = QUESTIONS[current];
+
+  // progress dots
+  const progress = document.getElementById("progress");
+  progress.innerHTML = "";
+  QUESTIONS.forEach((_, i)=>{
+    const dot = document.createElement("i");
+    if(i < current) dot.className = "done";
+    else if(i === current) dot.className = "current";
+    progress.appendChild(dot);
+  });
+
+  document.getElementById("qNum").textContent = "Вопрос " + (current+1) + " из " + QUESTIONS.length;
+  document.getElementById("qText").textContent = q.text;
+
+  const optsWrap = document.getElementById("qOptions");
+  optsWrap.innerHTML = "";
+  q.options.forEach((opt, idx)=>{
+    const btn = document.createElement("button");
+    btn.className = "btn btn-option";
+    btn.textContent = typeof opt === "string" ? opt : opt.t;
+    btn.onclick = ()=> selectAnswer(idx);
+    optsWrap.appendChild(btn);
+  });
+}
+
+function selectAnswer(idx){
+  const q = QUESTIONS[current];
+
+  if(q.type === "stage"){
+    stageBranch = idx < 2 ? "12" : "34";
+  } else if(q.type === "ready"){
+    readyBranch = idx < 2 ? "12" : "34";
+  } else if(q.type === "score"){
+    const d = q.options[idx].d;
+    scores[d] += 1;
+    lastSeen[d] = current;
+  }
+
+  current++;
+  if(current < QUESTIONS.length){
+    renderQuestion();
+  } else {
+    renderResult();
+  }
+}
+
+function renderResult(){
+  // ранжируем направления: сначала по количеству очков, при равенстве — по более позднему вопросу
+  const ranked = Object.keys(scores).sort((a,b)=>{
+    if(scores[b] !== scores[a]) return scores[b]-scores[a];
+    return lastSeen[b]-lastSeen[a];
+  });
+  const primary = DIRECTIONS[ranked[0]];
+  const secondary = DIRECTIONS[ranked[1]];
+
+  document.getElementById("resultStep").textContent = primary.step;
+  document.getElementById("resultTitle").textContent = primary.title;
+  document.getElementById("resultIntro").textContent = RESULT_INTRO[stageBranch];
+
+  const bodyWrap = document.getElementById("resultBody");
+  bodyWrap.innerHTML = "";
+  primary.body.forEach(par=>{
+    const p = document.createElement("p");
+    p.textContent = par;
+    bodyWrap.appendChild(p);
+  });
+
+  document.getElementById("secondaryTitle").textContent = secondary.title;
+  document.getElementById("secondaryBody").textContent = secondary.secondary;
+
+  document.getElementById("ctaText").textContent = FINAL_CTA[readyBranch];
+  document.getElementById("channelBtn").href = CHANNEL_LINK;
+
+  showScreen("result");
+  window.scrollTo(0,0);
+}
+
+function restartQuiz(){
+  current = -1;
+  showScreen("welcome");
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>
