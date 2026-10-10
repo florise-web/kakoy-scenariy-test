@@ -304,8 +304,46 @@ p:last-child{margin-bottom:0;}
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms!important;transition-duration:.01ms!important;}
 }
+
+/* ---- блоки в результате: чтобы текст не читался сплошной стеной ---- */
+#resultBody{ margin-top:18px; }
+.rblock{
+  position:relative;
+  margin:0 0 14px;
+  padding:18px 18px 17px 20px;
+  border:1px solid var(--line);
+  border-radius:16px;
+  background:linear-gradient(180deg, rgba(246,241,230,.045), rgba(246,241,230,.012));
+}
+.rblock::before{
+  content:"";
+  position:absolute; left:0; top:20px; bottom:20px; width:2px;
+  border-radius:2px;
+  background:linear-gradient(180deg, var(--gold), rgba(201,161,90,0));
+}
+.rblock:last-child{ margin-bottom:0; }
+.rblock-cap{
+  display:flex; align-items:center; gap:10px;
+  margin:0 0 10px;
+  font-family:'Cinzel','Cormorant Garamond',serif;
+  font-size:11px; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--gold-light);
+}
+.rblock-num{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:25px; height:25px; flex:none;
+  border-radius:50%;
+  border:1px solid var(--line-2);
+  color:var(--gold);
+  font-size:10.5px; letter-spacing:.02em;
+}
+.rblock p{ margin:0; }
+@media (max-width:420px){
+  .rblock{ padding:16px 15px 15px 17px; }
+  .rblock-cap{ font-size:10px; letter-spacing:.16em; }
+}
 </style>
-<script>(function(){var V="20261010160000";function chk(){try{fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){t=(t||"").trim();if(!t||t===V)return;var k="fr_"+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,1)}catch(e){}var u=new URL(location.href);u.searchParams.set("v",t);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});window.addEventListener("pageshow",function(e){if(e.persisted)chk()})})();</script><!--/fresh-->
+<script>(function(){var V="20261010170000";function chk(){try{fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){t=(t||"").trim();if(!t||t===V)return;var k="fr_"+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,1)}catch(e){}var u=new URL(location.href);u.searchParams.set("v",t);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});window.addEventListener("pageshow",function(e){if(e.persisted)chk()})})();</script><!--/fresh-->
 </head>
 <body>
 
@@ -416,12 +454,12 @@ p:last-child{margin-bottom:0;}
 
       <div class="card card-hi">
         <p class="mini-eyebrow" style="color:var(--gold)">предзапись открыта</p>
-        <h3>Следующий поток «Перехода» в ноябре</h3>
+        <h3>«ПЕРЕХОД: НОВОЕ СОЗНАНИЕ», старт 23 ноября</h3>
         <p style="margin:0 0 4px;font-size:15px;color:var(--t-2)">Это семь ступеней перехода в другую ветку реальности у Ирины Гребенюковой. Сейчас идет предзапись, и место в списке можно занять уже сейчас.</p>
         <div class="vlist">
           <div class="vitem"><span>✦</span><span>Кто в списке, заходит по самой низкой цене</span></div>
           <div class="vitem"><span>✦</span><span>Бонусы тем, кто оплатит первыми</span></div>
-          <div class="vitem"><span>✦</span><span>Доступ в закрытый канал и практики открывается сразу, а не в ноябре</span></div>
+          <div class="vitem"><span>✦</span><span>Доступ в закрытый канал и практики открывается сразу, а не 23 ноября</span></div>
           <div class="vitem"><span>✦</span><span>Программу, форматы и цены объявляют там раньше, чем где-либо еще</span></div>
         </div>
       </div>
@@ -726,10 +764,26 @@ function renderResult(){
 
   const bodyWrap = document.getElementById("resultBody");
   bodyWrap.innerHTML = "";
-  primary.body.forEach(function(par){
+  var CAPS3 = ["как это выглядит", "откуда это растет", "что с этим делать"];
+  var CAPS4 = ["как это выглядит", "откуда это растет", "чего это стоит", "что с этим делать"];
+  var caps = primary.body.length === 3 ? CAPS3 : (primary.body.length === 4 ? CAPS4 : null);
+  primary.body.forEach(function(par, bi){
+    const box = document.createElement("div");
+    box.className = "rblock";
+    if (caps) {
+      const cap = document.createElement("div");
+      cap.className = "rblock-cap";
+      const num = document.createElement("span");
+      num.className = "rblock-num";
+      num.textContent = "0" + (bi + 1);
+      cap.appendChild(num);
+      cap.appendChild(document.createTextNode(caps[bi]));
+      box.appendChild(cap);
+    }
     const p = document.createElement("p");
     p.textContent = par;
-    bodyWrap.appendChild(p);
+    box.appendChild(p);
+    bodyWrap.appendChild(box);
   });
 
   document.getElementById("secondaryTitle").textContent = secondary.title;
