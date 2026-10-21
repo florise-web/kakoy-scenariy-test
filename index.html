@@ -397,7 +397,7 @@ p:last-child{margin-bottom:0;}
 .faq[open] summary:after{content:"\\2212"}
 .faq p{margin:0;padding:0 0 15px;color:var(--t-4);font-size:15px}
 </style>
-<script>(function(){var V="20261021190000";function chk(){try{fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){t=(t||"").trim();if(!t||t===V)return;var k="fr_"+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,1)}catch(e){}var u=new URL(location.href);u.searchParams.set("v",t);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});window.addEventListener("pageshow",function(e){if(e.persisted)chk()})})();</script><!--/fresh-->
+<script>(function(){var V="20261021193000";function chk(){try{fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){t=(t||"").trim();if(!t||t===V)return;var k="fr_"+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,1)}catch(e){}var u=new URL(location.href);u.searchParams.set("v",t);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});window.addEventListener("pageshow",function(e){if(e.persisted)chk()})})();</script><!--/fresh-->
 </head>
 <body>
 
@@ -698,11 +698,12 @@ function setBar(mode){
     note.textContent = "8 вопросов · 2 минуты";
   } else if(mode === "channel"){
     bar.classList.add("on");
-    btn.textContent = "войти в канал";
-    btn.setAttribute("href", CHANNEL_LINK);
+    btn.textContent = "забрать свой разбор";
+    var _l = (window.__scenLink || CHANNEL_LINK);
+    btn.setAttribute("href", _l);
     btn.setAttribute("target","_blank");
-    btn.onclick = function(){ haptic('medium'); if(tg){ try{ tg.openTelegramLink(CHANNEL_LINK); }catch(e){} } };
-    note.textContent = "закрытый канал Ирины";
+    btn.onclick = function(){ haptic('medium'); if(tg){ try{ tg.openTelegramLink(window.__scenLink || CHANNEL_LINK); }catch(e){} } };
+    note.textContent = "бесплатно, в канале Ирины";
   } else {
     bar.classList.remove("on");
     btn.onclick = null;
@@ -890,6 +891,7 @@ function renderScen(key){
   var wv = ""; [8,14,22,12,26,18,10,24,16,28,12,20,9,22,14,26,10,18,24,12,16,8,20,14].forEach(function(x){ wv += '<i style="height:' + x + 'px"></i>'; });
   document.getElementById("brAud").innerHTML = '<div class="nmx">Ирина Гребенюкова</div><div class="pl"><div class="pb"></div><div class="wv">' + wv + '</div><div class="tm">' + E.d + '</div></div><div class="vh">' + E.h + '</div><div class="vq">' + E.q + '</div>';
   var link = "https://t.me/peoplenewtning/" + E.id;
+  window.__scenLink = link;
   var mg = "https://t.me/florise_irina";
   [["goCh",link],["goMg",mg]].forEach(function(p){
     var b = document.getElementById(p[0]); if(!b) return;
