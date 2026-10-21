@@ -481,7 +481,7 @@ h1.display,.display{text-shadow:none !important;color:#1B1426}
 .bg-glow,.bg-glow-2{opacity:.14}
 .bg-geo{opacity:.08}
 </style>
-<script>(function(){var V="20261022101500";function chk(){try{fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){t=(t||"").trim();if(!t||t===V)return;var k="fr_"+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,1)}catch(e){}var u=new URL(location.href);u.searchParams.set("v",t);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});window.addEventListener("pageshow",function(e){if(e.persisted)chk()})})();</script><!--/fresh-->
+<script>(function(){var V="20261021141500";function chk(){try{fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){t=(t||"").trim();if(!t||t===V)return;var k="fr_"+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,1)}catch(e){}var u=new URL(location.href);u.searchParams.set("v",t);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});window.addEventListener("pageshow",function(e){if(e.persisted)chk()})})();</script><!--/fresh-->
 </head>
 <body>
 
@@ -600,7 +600,7 @@ h1.display,.display{text-shadow:none !important;color:#1B1426}
         <div class="ot"><i></i><span>Все остается в записи</span></div>
         <p class="onf">Не подойдет, если вы ищете терапию или ждете, что изменится кто-то другой. Семь ступеней работают только на вас.</p>
         <a class="btn btn-primary" id="goOffer" href="https://t.me/florise_irina" target="_blank" rel="noopener">узнать про «Переход»</a>
-        <p class="xsmall c">ответит команда Ирины, аккаунт @florise_irina</p>
+        <p class="xsmall c">сообщение уже готово, останется вставить и отправить</p>
       </div>
 
       <p class="xcap">остались вопросы</p>
@@ -1025,6 +1025,13 @@ var SCEN = {
      l:["Почему знания не превращаются в движение","Как понять, что действительно ваше","С чего начинается расширение"],
      id:4454,d:"18:03",h:"Работаем с расширением, масштабом и изобилием",q:"Какие энергии включать и как перестать мельчить"}
 };
+var MANAGER = "https://t.me/florise_irina";
+var MSG = "Хочу узнать подробнее про программу ПЕРЕХОД: НОВОЕ СОЗНАНИЕ";
+function goMgr(e){ if (e && e.preventDefault) e.preventDefault(); try { if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(MSG); } catch(x){} if (window.Telegram && Telegram.WebApp && Telegram.WebApp.openTelegramLink){ try { Telegram.WebApp.openTelegramLink(MANAGER); return false; } catch(x){} } location.href = MANAGER; return false; }
+var STATS_URL = "https://script.google.com/macros/s/AKfycbwZNJxbmarbbimY87ydj2x7skVhUzYzqEWvVVOayOgqK8VfXeIUbkqqZsJRnyqN5cWu9g/exec";
+function suid(){ var w = window.Telegram && Telegram.WebApp; var u = w && w.initDataUnsafe && w.initDataUnsafe.user; if (u) return "tg" + u.id; var k; try { k = localStorage.getItem("fl_uid"); if (!k){ k = "w" + Math.random().toString(36).slice(2,10); localStorage.setItem("fl_uid", k); } } catch(e){ k = "w?"; } return k; }
+var statSent = false;
+function sendStat(test, result, detail){ if (!STATS_URL || statSent) return; statSent = true; try { var w = window.Telegram && Telegram.WebApp; var u = (w && w.initDataUnsafe && w.initDataUnsafe.user) || {}; var p = { tab:"Тесты", name:(u.first_name||"") + (u.last_name ? " " + u.last_name : ""), telegram: u.username ? "@" + u.username : "", request:"тест=" + test + "; результат=" + result + "; " + (detail||"") + "; uid=" + suid() + "; источник=" + (u.id ? "бот" : "сайт"), consent:"тест" }; var q = Object.keys(p).map(function(k){ return k + "=" + encodeURIComponent(p[k]); }).join("&"); fetch(STATS_URL + "?" + q, { mode:"no-cors" }).catch(function(){}); } catch(e){} }
 function renderScen(key){
   var E = SCEN[key] || SCEN.A;
   document.getElementById("brA").textContent = E.a;
@@ -1038,11 +1045,10 @@ function renderScen(key){
   var link = "https://t.me/peoplenewtning/" + E.id;
   window.__scenLink = link;
   var mg = "https://t.me/florise_irina";
-  [["goCh",link],["goMg",mg]].forEach(function(p){
-    var b = document.getElementById(p[0]); if(!b) return;
-    b.href = p[1];
-    b.onclick = function(e){ if(tg && tg.openTelegramLink){ e.preventDefault(); try{ tg.openTelegramLink(p[1]); }catch(x){ location.href = p[1]; } } };
-  });
+  var bc = document.getElementById("goCh");
+  if (bc){ bc.href = link; bc.onclick = function(e){ if(tg && tg.openTelegramLink){ e.preventDefault(); try{ tg.openTelegramLink(link); }catch(x){ location.href = link; } } }; }
+  Array.prototype.forEach.call(document.querySelectorAll('a[href*="florise_irina"], #goMg'), function(a){ a.href = MANAGER; a.onclick = goMgr; });
+  sendStat("Сценарий", key + " " + String(E.a).slice(0,70), "ответы " + answers.join(""));
 }
 
 function restartQuiz(){
