@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<meta name="theme-color" content="#0d0b1a">
+<meta name="theme-color" content="#F7F3F9">
 <title>Какой сценарий вами управляет?</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -394,7 +394,7 @@ p:last-child{margin-bottom:0;}
 .faq summary{list-style:none;cursor:pointer;padding:15px 0;font-weight:600;display:flex;justify-content:space-between;gap:12px;color:var(--t-2)}
 .faq summary::-webkit-details-marker{display:none}
 .faq summary:after{content:"+";color:var(--gold);font-weight:700}
-.faq[open] summary:after{content:"\\2212"}
+.faq[open] summary:after{content:"−"}
 .faq p{margin:0;padding:0 0 15px;color:var(--t-4);font-size:15px}
 
 .pad .chip{background:rgba(201,161,90,.12);border:1px solid var(--line-2);color:var(--gold-light)}
@@ -404,8 +404,75 @@ h1.display span{opacity:.85}
 .brc.b{position:relative;overflow:hidden}
 .brc.b::after{content:"";position:absolute;right:-60px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(201,161,90,.18),transparent 70%);pointer-events:none}
 .brc.b > *{position:relative}
+
+/* --- светлая тема --- */
+:root{
+  --ink:#F7F3F9; --ink-2:#FFFFFF; --ink-3:#FFFFFF; --ink-4:#F1E9F6;
+  --gold:#9A7332; --gold-light:#7E5C27;
+  --violet:#7B3FB5; --violet-deep:#5A2A86;
+  --t-1:#1B1426; --t-2:#2C2239; --t-3:#473A57; --t-4:#6A5B7B; --t-5:#8B7D9A;
+  --line:rgba(123,63,181,.16); --line-2:rgba(123,63,181,.34);
+}
+html,body{background:#F7F3F9;color:var(--t-2)}
+.bg-stars{opacity:.1;filter:invert(1)}
+.bg-glow{opacity:.22}
+.bg-glow-2{opacity:.18}
+.bg-geo{opacity:.12}
+.bg-geo g{stroke:#7B3FB5 !important}
+.card,.card-hi{background:#FFFFFF;border:1px solid var(--line);box-shadow:0 14px 34px -26px rgba(90,42,134,.35)}
+.btn-primary{background:linear-gradient(160deg,#7B3FB5,#5A2A86);color:#fff}
+.btn-ghost{border:1.5px solid var(--line-2);color:var(--violet);background:transparent}
+.bar{background:rgba(247,243,249,.94);border-top:1px solid var(--line)}
+.bar-note{color:var(--t-5)}
+.opt,.answer,.choice{background:#FFFFFF;border:1px solid var(--line);color:var(--t-2)}
+.opt:hover,.answer:hover,.choice:hover{border-color:var(--violet)}
+.chip,.pad .chip{background:rgba(123,63,181,.09);border:1px solid var(--line-2);color:var(--violet-deep)}
+h1.display,.display{color:var(--t-1)}
+.serif-quote{color:var(--t-3)}
+.dim{color:var(--t-5)}
+.rule,.rule-h{background:var(--line);border-color:var(--line)}
+.xcap{color:var(--violet)}
+.xcap::before{background:var(--violet)}
+.brc.a{background:#FBEFF2;border:1px solid rgba(194,38,63,.22)}
+.brc.a .bcap{color:#B14258}
+.brc.a p{color:#5A4450}
+.brc.b{background:linear-gradient(160deg,#7B3FB5,#54267F);border:0;color:#fff}
+.brc.b .bcap{color:#E7D4F8}
+.brc.b p{color:#F7F1FC}
+.resist{background:#FFFFFF;border:1px dashed var(--line-2);color:var(--t-2)}
+.resist b{color:var(--violet-deep)}
+.lockbox{background:#FFFFFF;border:1px solid var(--line)}
+.lockbox .ln{color:var(--t-2)}
+.lockbox .ln i{background:rgba(123,63,181,.1);border:1px solid var(--line-2);color:var(--violet)}
+.lockbox .ov{background:rgba(123,63,181,.08);color:var(--violet-deep)}
+.aud{background:linear-gradient(160deg,#FFFFFF,#F4ECF8);border:1px solid var(--line)}
+.aud .nmx{color:var(--violet)}
+.aud .pb{background:var(--violet)}
+.aud .pb:after{border-left-color:#fff}
+.aud .wv i{background:rgba(123,63,181,.3)}
+.aud .tm{color:var(--t-5)}
+.aud .vh{color:var(--t-1)}
+.aud .vq{color:var(--t-4)}
+.faq{background:#FFFFFF;border:1px solid var(--line)}
+.faq summary{color:var(--t-2)}
+.faq summary:after{color:var(--violet)}
+.faq p{color:var(--t-4)}
+.vlist .vitem span:first-child{color:var(--gold)}
+.xsmall{color:var(--t-5)}
+.topbar,.meta,.back{color:var(--t-4)}
+.progress i.on,.progress .on{background:var(--violet)}
+
+.offer{margin-top:28px;padding:24px 20px;border-radius:22px;background:linear-gradient(165deg,#FFFFFF,#F3EAF8);border:1px solid var(--line-2);box-shadow:0 22px 48px -30px rgba(90,42,134,.45)}
+.offer .ob{font-weight:700;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--violet);margin-bottom:10px}
+.offer h3{margin:0 0 10px;font-size:23px;line-height:1.18;color:var(--t-1);letter-spacing:.01em}
+.offer .ol{margin:0 0 14px;font-size:15.5px;line-height:1.6;color:var(--t-3)}
+.offer .ot{display:grid;grid-template-columns:20px 1fr;gap:10px;align-items:start;margin-top:10px;font-size:15px;line-height:1.5;color:var(--t-2)}
+.offer .ot i{display:block;width:20px;height:20px;border-radius:6px;background:var(--violet);position:relative;margin-top:2px}
+.offer .ot i:after{content:"";position:absolute;left:7px;top:4px;width:4px;height:9px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+.offer .onf{margin-top:14px;padding:12px 14px;border-radius:12px;background:rgba(123,63,181,.06);font-size:14px;line-height:1.5;color:var(--t-4)}
+.offer .btn{margin-top:18px}
 </style>
-<script>(function(){var V="20261021210000";function chk(){try{fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){t=(t||"").trim();if(!t||t===V)return;var k="fr_"+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,1)}catch(e){}var u=new URL(location.href);u.searchParams.set("v",t);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});window.addEventListener("pageshow",function(e){if(e.persisted)chk()})})();</script><!--/fresh-->
+<script>(function(){var V="20261022090000";function chk(){try{fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){t=(t||"").trim();if(!t||t===V)return;var k="fr_"+t;try{if(sessionStorage.getItem(k))return;sessionStorage.setItem(k,1)}catch(e){}var u=new URL(location.href);u.searchParams.set("v",t);location.replace(u.toString())}).catch(function(){})}catch(e){}}chk();document.addEventListener("visibilitychange",function(){if(!document.hidden)chk()});window.addEventListener("pageshow",function(e){if(e.persisted)chk()})})();</script><!--/fresh-->
 </head>
 <body>
 
@@ -513,6 +580,19 @@ h1.display span{opacity:.85}
       <a class="btn btn-ghost" id="goMg" href="#" target="_blank" rel="noopener">написать команде Ирины</a>
       <p class="xsmall c">пишем только с аккаунта @florise_irina</p>
 
+      <div class="offer">
+        <div class="ob">старт 23 ноября · 7 ступеней · онлайн</div>
+        <h3>ПЕРЕХОД: НОВОЕ СОЗНАНИЕ</h3>
+        <p class="ol">Программа для тех, кто готов оказаться в своей лучшей ветке реальности. Работаем на всех уровнях: с мыслями, эмоциями и телом, чтобы каждый шаг давался легче и вел вас дальше.</p>
+        <div class="ot"><i></i><span>Семь ступеней, по одной за раз, а не все сразу</span></div>
+        <div class="ot"><i></i><span>Живые эфиры онлайн 14 и 21 день, а не записи</span></div>
+        <div class="ot"><i></i><span>Ирина отвечает лично на вашу ситуацию</span></div>
+        <div class="ot"><i></i><span>Все остается в записи</span></div>
+        <p class="onf">Не подойдет, если вы ищете терапию или ждете, что изменится кто-то другой. Семь ступеней работают только на вас.</p>
+        <a class="btn btn-primary" id="goOffer" href="https://t.me/florise_irina" target="_blank" rel="noopener">узнать про «Переход»</a>
+        <p class="xsmall c">ответит команда Ирины, аккаунт @florise_irina</p>
+      </div>
+
       <p class="xcap">остались вопросы</p>
       <details class="faq"><summary>Это бесплатно?</summary><p>Да. Разборы и практики в канале бесплатные</p></details>
       <details class="faq"><summary>Мне будут что-то продавать?</summary><p>У Ирины есть программа «ПЕРЕХОД: НОВОЕ СОЗНАНИЕ». Кто в канале, узнает условия первым. Решать вам, разборы остаются бесплатными</p></details>
@@ -542,7 +622,7 @@ const tg = window.Telegram ? window.Telegram.WebApp : null;
 if(tg){
   tg.ready();
   tg.expand();
-  try{ tg.setHeaderColor('#0d0b1a'); tg.setBackgroundColor('#0d0b1a'); }catch(e){}
+  try{ tg.setHeaderColor('#F7F3F9'); tg.setBackgroundColor('#F7F3F9'); }catch(e){}
   try{ tg.disableVerticalSwipes(); }catch(e){}
   try{ tg.BackButton.onClick(goBack); }catch(e){}
 }
